@@ -1,0 +1,6 @@
+# Добавить сюда своих вопросов. Эту строку надо пропустить при настройке CsvToBean (withSkipLines)
+Есть ли жизнь на Марсе?;Это науке пока не известно%true|Конечно. Красные (НЛО) это с Марса. А зеленые (НЛО) с Венеры%false|Точно нет%false
+Как нужно загружать ресурс из jar в Java?;ClassLoader#getResourceAsStream или ClassPathResource#getInputStream%true|ClassLoader#getResource#getFile + FileReader%false|Wingardium Leviosa%false
+Какой предпочтительный способ реакции на исключения?;@SneakyThrow%false|e.printStackTrace()%false|Проброс дальше с предварительным оборачиванием в бизнес-исключение (например, QuestionReadException)%true|Игнорирование исключения%false
+В каком виде спорта разыгрывается "Кубок Стэнли"?;Бейсбол%false|Американский футбол%false|Хоккей%true|Баскетбол%false
+Что из нижеперечисленного является stereotype-аннотацией в Spring?;@Service%false|@Controller%false|@Repository%false|@Component%false|Всё вышеперечисленное%true
