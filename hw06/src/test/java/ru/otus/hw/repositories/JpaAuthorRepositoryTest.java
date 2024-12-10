@@ -23,7 +23,7 @@ class JpaAuthorRepositoryTest {
     private JpaAuthorRepository authorRepository;
 
     @Autowired
-    private TestEntityManager em;
+    private TestEntityManager testEntityManager;
 
     @Test
     @DisplayName(" должен загружать информацию об авторе по его id")
@@ -31,7 +31,7 @@ class JpaAuthorRepositoryTest {
         long authorId = 1L;
 
         Optional<Author> authorOptional = authorRepository.findById(authorId);
-        Author author = em.find(Author.class, authorId);
+        Author author = testEntityManager.find(Author.class, authorId);
 
         assertThat(authorOptional).isPresent().get()
                 .usingRecursiveComparison().isEqualTo(author);
@@ -40,7 +40,7 @@ class JpaAuthorRepositoryTest {
     @Test
     @DisplayName(" должен загружать список всех авторов")
     void shouldFindAllAuthors() {
-        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
+        SessionFactory sessionFactory = testEntityManager.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 

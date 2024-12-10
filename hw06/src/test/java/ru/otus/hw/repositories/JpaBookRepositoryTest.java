@@ -28,7 +28,7 @@ class JpaBookRepositoryTest {
     private JpaBookRepository bookRepository;
 
     @Autowired
-    private TestEntityManager em;
+    private TestEntityManager testEntityManager;
 
     @Test
     @DisplayName(" должен загружать сущность книги по id")
@@ -36,7 +36,7 @@ class JpaBookRepositoryTest {
         long bookId = 2L;
 
         Optional<Book> bookOptional = bookRepository.findById(bookId);
-        Book book = em.find(Book.class, bookId);
+        Book book = testEntityManager.find(Book.class, bookId);
 
         assertThat(bookOptional).isPresent().get()
                 .usingRecursiveComparison().isEqualTo(book);
@@ -45,7 +45,7 @@ class JpaBookRepositoryTest {
     @Test
     @DisplayName(" должен загружать список всех книг")
     void shouldFindAllBooks() {
-        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
+        SessionFactory sessionFactory = testEntityManager.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
@@ -81,7 +81,7 @@ class JpaBookRepositoryTest {
 
         assertThat(savedBook.getId()).isGreaterThan(0);
 
-        Book actualBook = em.find(Book.class, savedBook.getId());
+        Book actualBook = testEntityManager.find(Book.class, savedBook.getId());
         assertThat(actualBook).isNotNull()
                 .matches(b -> StringUtils.hasText(b.getTitle()))
                 .matches(b -> Objects.nonNull(b.getAuthor()) && b.getAuthor().getId() > 0)
@@ -94,14 +94,14 @@ class JpaBookRepositoryTest {
     void shouldUpdateBook() {
         long bookId = 1L;
 
-        Book book = em.find(Book.class, bookId);
+        Book book = testEntityManager.find(Book.class, bookId);
         book.setTitle("Гарик Повар и Кубок ЛЧ");
 
         Book savedBook = bookRepository.save(book);
 
         assertThat(savedBook.getId()).isEqualTo(bookId);
 
-        Book actualBook = em.find(Book.class, savedBook.getId());
+        Book actualBook = testEntityManager.find(Book.class, savedBook.getId());
         assertThat(actualBook).isNotNull()
                 .matches(b -> StringUtils.hasText(b.getTitle()) && b.getTitle().equals(book.getTitle()))
                 .matches(b -> Objects.nonNull(b.getAuthor()) && b.getAuthor().getId() > 0)
@@ -113,13 +113,13 @@ class JpaBookRepositoryTest {
     @DisplayName(" должен удалить книгу по id")
     void shouldDeleteBookById() {
         long bookId = 1L;
-        Book book = em.find(Book.class, bookId);
+        Book book = testEntityManager.find(Book.class, bookId);
 
         assertThat(book).isNotNull();
-        em.detach(book);
+        testEntityManager.detach(book);
 
         bookRepository.deleteById(bookId);
-        Book deletedBook = em.find(Book.class, bookId);
+        Book deletedBook = testEntityManager.find(Book.class, bookId);
 
         assertThat(deletedBook).isNull();
     }

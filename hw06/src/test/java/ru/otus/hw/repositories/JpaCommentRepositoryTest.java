@@ -27,12 +27,12 @@ class JpaCommentRepositoryTest {
     private JpaCommentRepository commentRepository;
 
     @Autowired
-    private TestEntityManager em;
+    private TestEntityManager testEntityManager;
 
     @Test
     @DisplayName(" должен найти все комментарии по id книги")
     void shouldFindAllByBookId() {
-        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
+        SessionFactory sessionFactory = testEntityManager.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
@@ -67,7 +67,7 @@ class JpaCommentRepositoryTest {
 
         assertThat(savedComment.getId()).isGreaterThan(0);
 
-        Comment actualComment = em.find(Comment.class, savedComment.getId());
+        Comment actualComment = testEntityManager.find(Comment.class, savedComment.getId());
 
         assertThat(actualComment).isNotNull()
                 .matches(c -> StringUtils.hasText(c.getText()))
@@ -79,14 +79,14 @@ class JpaCommentRepositoryTest {
     void shouldUpdateComment() {
         long commentId = 1L;
 
-        Comment comment = em.find(Comment.class, commentId);
+        Comment comment = testEntityManager.find(Comment.class, commentId);
         comment.setText("Неплохо");
 
         Comment savedComment = commentRepository.save(comment);
 
         assertThat(savedComment.getId()).isEqualTo(commentId);
 
-        Comment actualComment = em.find(Comment.class, savedComment.getId());
+        Comment actualComment = testEntityManager.find(Comment.class, savedComment.getId());
 
         assertThat(actualComment).isNotNull()
                 .matches(c -> StringUtils.hasText(c.getText()))
@@ -97,13 +97,13 @@ class JpaCommentRepositoryTest {
     @DisplayName(" должен удалить комментарий по id")
     void shouldDeleteCommentById() {
         long commentId = 1L;
-        Comment comment = em.find(Comment.class, commentId);
+        Comment comment = testEntityManager.find(Comment.class, commentId);
 
         assertThat(comment).isNotNull();
-        em.detach(comment);
+        testEntityManager.detach(comment);
 
         commentRepository.deleteById(commentId);
-        Comment deletedComment = em.find(Comment.class, commentId);
+        Comment deletedComment = testEntityManager.find(Comment.class, commentId);
 
         assertThat(deletedComment).isNull();
     }

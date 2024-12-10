@@ -8,12 +8,14 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import ru.otus.hw.dto.BookDto;
+import ru.otus.hw.exceptions.EntityNotFoundException;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class BookServiceImplTest {
@@ -63,6 +65,34 @@ class BookServiceImplTest {
                 .matches(b -> StringUtils.hasText(b.getTitle()) && b.getTitle().equals(bookTitle))
                 .matches(b -> Objects.nonNull(b.getGenre()) && b.getGenre().getId() == genreId)
                 .matches(b -> Objects.nonNull(b.getAuthor()) && b.getAuthor().getId() == authorId);
+    }
+
+    @Test
+    @DisplayName(" должен бросать EntityNotFoundException если автор не найден")
+    void shouldThrowAnEntityNotFoundExceptionIfAuthorDoesNotExist() {
+        String bookTitle = "Игрок";
+        long authorId = -2L;
+        long genreId = 2L;
+
+        String expectedMessage = "Author with id %d not found".formatted(authorId);
+
+        assertThatThrownBy(() -> bookService.insert(bookTitle, authorId, genreId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .matches(e -> e.getMessage().equals(expectedMessage));
+    }
+
+    @Test
+    @DisplayName(" должен бросать EntityNotFoundException если жанр не найден")
+    void shouldThrowAnEntityNotFoundExceptionIfGenreDoesNotExist() {
+        String bookTitle = "Игрок";
+        long authorId = 2L;
+        long genreId = -2L;
+
+        String expectedMessage = "Genre with id %d not found".formatted(genreId);
+
+        assertThatThrownBy(() -> bookService.insert(bookTitle, authorId, genreId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .matches(e -> e.getMessage().equals(expectedMessage));
     }
 
     @Test

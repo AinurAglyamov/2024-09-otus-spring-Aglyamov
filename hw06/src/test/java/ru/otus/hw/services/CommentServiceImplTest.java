@@ -7,12 +7,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.StringUtils;
 import ru.otus.hw.dto.CommentDto;
+import ru.otus.hw.exceptions.EntityNotFoundException;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class CommentServiceImplTest {
@@ -22,7 +24,7 @@ class CommentServiceImplTest {
 
     @Test
     @DisplayName(" должен найти все комментарии по id книги")
-    void findAllByBookId() {
+    void shouldFindAllByBookId() {
         long bookId = 1L;
 
         List<CommentDto> comments = commentService.findAllByBookId(bookId);
@@ -37,7 +39,7 @@ class CommentServiceImplTest {
 
     @Test
     @DisplayName(" должен найти комментарий по id")
-    void findById() {
+    void shouldFindById() {
         long commentId = 1L;
 
         Optional<CommentDto> commentOptional = commentService.findById(commentId);
@@ -51,7 +53,7 @@ class CommentServiceImplTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @DisplayName(" должен добавлять новый комментарий к книге")
-    void insert() {
+    void shouldInsertComment() {
         long bookId = 1L;
         String text = "Не люблю Гарри Поттера";
 
@@ -65,8 +67,21 @@ class CommentServiceImplTest {
     }
 
     @Test
+    @DisplayName(" должен бросать EntityNotFoundException если книга не найдена")
+    void shouldThrowAnEntityNotFoundExceptionIfBookDoesNotExist() {
+        long bookId = -1L;
+        String text = "Не люблю Гарри Поттера";
+
+        String expectedMessage = "Book with id %d not found".formatted(bookId);
+
+        assertThatThrownBy(() -> commentService.insert(text, bookId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .matches(e -> e.getMessage().equals(expectedMessage));
+    }
+
+    @Test
     @DisplayName(" должен обновить комментарий")
-    void update() {
+    void shouldUpdateComment() {
         long commentId = 1L;
         String text = "Поменял свое мнение";
 
@@ -78,8 +93,21 @@ class CommentServiceImplTest {
     }
 
     @Test
+    @DisplayName(" должен бросать EntityNotFoundException если комментарий не найден")
+    void shouldThrowAnEntityNotFoundExceptionIfCommentDoesNotExist() {
+        long commentId = -1L;
+        String text = "Не люблю Гарри Поттера";
+
+        String expectedMessage = "Comment with id %d not found".formatted(commentId);
+
+        assertThatThrownBy(() -> commentService.update(commentId, text))
+                .isInstanceOf(EntityNotFoundException.class)
+                .matches(e -> e.getMessage().equals(expectedMessage));
+    }
+
+    @Test
     @DisplayName(" должен удалить комментарий по id")
-    void deleteById() {
+    void shouldDeleteCommentById() {
         long commentId = 1L;
         commentService.deleteById(commentId);
 

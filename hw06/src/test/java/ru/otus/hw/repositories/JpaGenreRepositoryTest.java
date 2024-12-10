@@ -22,7 +22,7 @@ class JpaGenreRepositoryTest {
     private JpaGenreRepository genreRepository;
 
     @Autowired
-    private TestEntityManager em;
+    private TestEntityManager testEntityManager;
 
     @Test
     @DisplayName(" должен загружать сущность жанра по id")
@@ -30,7 +30,7 @@ class JpaGenreRepositoryTest {
         long genreId = 1L;
 
         Optional<Genre> authorOptional = genreRepository.findById(genreId);
-        Genre genre = em.find(Genre.class, genreId);
+        Genre genre = testEntityManager.find(Genre.class, genreId);
 
         assertThat(authorOptional).isPresent().get()
                 .usingRecursiveComparison().isEqualTo(genre);
@@ -39,7 +39,7 @@ class JpaGenreRepositoryTest {
     @Test
     @DisplayName(" должен загружать список всех жанров")
     void shouldFindAllGenres() {
-        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
+        SessionFactory sessionFactory = testEntityManager.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
