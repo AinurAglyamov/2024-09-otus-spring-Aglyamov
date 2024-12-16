@@ -81,7 +81,7 @@ class CommentServiceImplTest {
 
     @Test
     @DisplayName(" должен обновить комментарий")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void shouldUpdateComment() {
         long commentId = 1L;
         String text = "Поменял свое мнение";
