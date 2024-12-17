@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.StringUtils;
 import ru.otus.hw.models.Genre;
 
@@ -36,6 +37,7 @@ class GenreRepositoryTest {
 
     @Test
     @DisplayName(" должен загружать список всех жанров")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void shouldFindAllGenres() {
         SessionFactory sessionFactory = testEntityManager.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
