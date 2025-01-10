@@ -1,9 +1,5 @@
 package ru.otus.hw10.repositories;
 
-import ru.otus.hw10.models.Author;
-import ru.otus.hw10.models.Book;
-import ru.otus.hw10.models.Comment;
-import ru.otus.hw10.models.Genre;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +8,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.StringUtils;
+import ru.otus.hw10.models.Author;
+import ru.otus.hw10.models.Book;
+import ru.otus.hw10.models.Comment;
+import ru.otus.hw10.models.Genre;
 
 import java.time.LocalDate;
 import java.util.List;

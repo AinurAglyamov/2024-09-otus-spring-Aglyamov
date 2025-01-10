@@ -1,6 +1,5 @@
 package ru.otus.hw10.repositories;
 
-import ru.otus.hw10.models.Author;
 import org.assertj.core.api.Assertions;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import ru.otus.hw10.models.Author;
 
 import java.util.Optional;
 

@@ -1,18 +1,15 @@
 package ru.otus.hw10.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.otus.hw10.exceptions.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.ModelAndView;
 
 @RequiredArgsConstructor
 @RestControllerAdvice
@@ -33,7 +30,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object>  handeException(Exception ex, WebRequest webRequest) {
+    public ResponseEntity<Object> handeException(Exception ex, WebRequest webRequest) {
         HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         ProblemDetail problemDetail = createProblemDetail(
                 ex,

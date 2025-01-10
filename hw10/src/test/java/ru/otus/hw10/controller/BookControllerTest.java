@@ -15,9 +15,6 @@ import ru.otus.hw10.services.BookService;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -26,7 +23,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(BookController.class)
 class BookControllerTest {
@@ -62,7 +58,7 @@ class BookControllerTest {
     @DisplayName(" должен вернуть все книги")
     void shouldReturnBooks() throws Exception {
         when(bookService.findAll()).thenReturn(books);
-        mvc.perform(get("/api/book"))
+        mvc.perform(get("/api/books"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(books)));
     }
@@ -72,9 +68,18 @@ class BookControllerTest {
     void shouldReturnBookById() throws Exception {
         BookDto book = books.get(0);
         when(bookService.findById(book.getId())).thenReturn(Optional.of(book));
-        mvc.perform(get("/api/book/1"))
+        mvc.perform(get("/api/books/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(books.get(0))));
+    }
+
+    @Test
+    @DisplayName(" должен вернуть статус Not found, если книга не существует")
+    void shouldReturnStatusNotFoundWhenBookDoesNotExist() throws Exception {
+        BookDto book = books.get(0);
+        when(bookService.findById(book.getId())).thenReturn(Optional.of(book));
+        mvc.perform(get("/api/books/4"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -82,9 +87,19 @@ class BookControllerTest {
     void shouldCreateBook() throws Exception {
         BookDto book = books.get(0);
         when(bookService.save(book)).thenReturn(book);
-        mvc.perform(post("/api/book").contentType(APPLICATION_JSON).content(mapper.writeValueAsString(book)))
+        mvc.perform(post("/api/books").contentType(APPLICATION_JSON).content(mapper.writeValueAsString(book)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(books.get(0))));
+    }
+
+    @Test
+    @DisplayName(" должен вернуть Внутреннюю ошибку сервера при ошибке создания книги")
+    void shouldReturnInternalServerError() throws Exception {
+        BookDto book = books.get(0);
+        when(bookService.save(book)).thenThrow(RuntimeException.class);
+
+        mvc.perform(post("/api/books").contentType(APPLICATION_JSON).content(mapper.writeValueAsString(book)))
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -92,7 +107,7 @@ class BookControllerTest {
     void shouldUpdateBook() throws Exception {
         BookDto book = books.get(0);
         when(bookService.save(book)).thenReturn(book);
-        mvc.perform(put("/api/book").contentType(APPLICATION_JSON).content(mapper.writeValueAsString(book)))
+        mvc.perform(put("/api/books").contentType(APPLICATION_JSON).content(mapper.writeValueAsString(book)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(books.get(0))));
     }
@@ -100,7 +115,7 @@ class BookControllerTest {
     @Test
     @DisplayName(" должен удалить книгу")
     void shouldDeleteBook() throws Exception {
-        mvc.perform(delete("/api/book?id=1"))
+        mvc.perform(delete("/api/books/1"))
                 .andExpect(status().isOk());
     }
 }

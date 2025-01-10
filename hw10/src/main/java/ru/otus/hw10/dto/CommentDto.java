@@ -1,8 +1,7 @@
 package ru.otus.hw10.dto;
 
-import lombok.NoArgsConstructor;
-import ru.otus.hw10.models.Book;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 

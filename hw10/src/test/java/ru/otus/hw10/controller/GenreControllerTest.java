@@ -39,7 +39,7 @@ class GenreControllerTest {
     @DisplayName("должен вернуть список всех жанров")
     void shouldReturnGenres() throws Exception {
         when(genreService.findAll()).thenReturn(genres);
-        mvc.perform(get("/api/genre"))
+        mvc.perform(get("/api/genres"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(genres)));
     }

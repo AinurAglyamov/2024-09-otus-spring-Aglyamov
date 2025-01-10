@@ -39,7 +39,7 @@ class AuthorControllerTest {
     @DisplayName(" должен вернуть всех авторов")
     void shouldReturnAllAuthors() throws Exception {
         when(authorService.findAll()).thenReturn(authors);
-        mvc.perform(get("/api/author"))
+        mvc.perform(get("/api/authors"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(authors)));
     }

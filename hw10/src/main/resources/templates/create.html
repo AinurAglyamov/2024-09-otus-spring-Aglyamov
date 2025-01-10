@@ -70,7 +70,7 @@
         let authorSelect = document.getElementById("author-select");
         let genreSelect = document.getElementById("genre-select");
 
-        fetch('api/author')
+        fetch('api/authors')
             .then(response => response.json())
             .then(authors => {
                 authors.forEach(author => {
@@ -80,7 +80,7 @@
                 })
             })
 
-        fetch('api/genre')
+        fetch('api/genres')
             .then(response => response.json())
             .then(genres => {
                 genres.forEach(genre => {
@@ -106,7 +106,7 @@
                 id: genreSelect.value
             }
         }
-        fetch("api/book", {
+        fetch("api/books", {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

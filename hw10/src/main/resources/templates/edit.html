@@ -37,7 +37,7 @@
 
         function findBookById() {
             const bookId = new URLSearchParams(window.location.search).get('id');
-            fetch("api/book/"+bookId)
+            fetch("api/books/"+bookId)
                 .then(response => response.json())
                 .then(book => {
                     let idInput = document.getElementById("id-input");
@@ -48,7 +48,7 @@
                     idInput.value = book.id
                     titleInput.value = book.title
 
-                    fetch('api/genre')
+                    fetch('api/genres')
                         .then(response => response.json())
                         .then(genres => {
                             genres.forEach(genre => {
@@ -63,7 +63,7 @@
                             })
                     })
 
-                    fetch('api/author')
+                    fetch('api/authors')
                         .then(response => response.json())
                         .then(authors => {
                             authors.forEach(author => {
@@ -97,7 +97,7 @@
                     id: genreSelect.value
                 }
             }
-            fetch("api/book", {
+            fetch("api/books", {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
