@@ -23,9 +23,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(BookController.class)
@@ -74,6 +77,14 @@ class BookControllerTest {
                 .andExpect(model().attribute("books", books));
     }
 
+    @Test
+    @DisplayName(" должен перенаправлять на страницу логина при отображении страницы со списками книг без аутентификации")
+    void shouldRedirectToLoginPageWhenOpeningBooksPageWithoutAuthentication() throws Exception {
+        mvc.perform(get("/").with(anonymous()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+    }
+
     @WithMockUser(
             username = "testUser"
     )
@@ -88,6 +99,14 @@ class BookControllerTest {
                 .andExpect(model().attribute("genres", genres));
     }
 
+    @Test
+    @DisplayName(" должен перенаправлять на страницу логина при открытии страницы создания книги без аутентификации")
+    void shouldRedirectToLoginPageWhenOpeningCreateBookPageWithoutAuthentication() throws Exception {
+        mvc.perform(get("/create").with(anonymous()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+    }
+
     @WithMockUser(
             username = "testUser"
     )
@@ -99,6 +118,14 @@ class BookControllerTest {
         mvc.perform(get("/edit").param("id", "1"))
                 .andExpect(view().name("edit"))
                 .andExpect(model().attribute("book", expectedBook));
+    }
+
+    @Test
+    @DisplayName(" должен перенаправлять на страницу логина при открытии страницы редактирования книги без аутентификации")
+    void shouldRedirectToLoginPageWhenOpeningEditBookPageWithoutAuthentication() throws Exception {
+        mvc.perform(get("/edit").with(anonymous()).param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 
     @WithMockUser(
@@ -124,6 +151,14 @@ class BookControllerTest {
         verify(bookService, times(1)).save(any(BookDto.class));
     }
 
+    @Test
+    @DisplayName(" должен перенаправлять на страницу логина при создании книги без аутентификации")
+    void shouldRedirectToLoginPageWhenCreateBookWithoutAuthentication() throws Exception {
+        mvc.perform(post("/create").with(anonymous()).param("name", "Убойная сила (Книга)"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+    }
+
     @WithMockUser(
             username = "testUser"
     )
@@ -134,5 +169,13 @@ class BookControllerTest {
         mvc.perform(post("/edit").param("id", "3").param("name", "11/22/63"))
                 .andExpect(view().name("redirect:/"));
         verify(bookService, times(1)).save(any(BookDto.class));
+    }
+
+    @Test
+    @DisplayName(" должен перенаправлять на страницу логина при редактировании книги без аутентификации")
+    void shouldRedirectToLoginPageWhenEditBookWithoutAuthentication() throws Exception {
+        mvc.perform(post("/edit").with(anonymous()).param("id", "3").param("name", "11/22/63"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 }
