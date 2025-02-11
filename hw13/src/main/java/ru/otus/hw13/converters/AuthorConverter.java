@@ -16,8 +16,7 @@ public class AuthorConverter {
     public AuthorDto authorToAuthorDto(Author author) {
         return new AuthorDto()
                 .setId(author.getId())
-                .setFullName(author.getFullName())
-                .setBooks(author.getBooks());
+                .setFullName(author.getFullName());
     }
 
     public Author authorDtoToAuthor(AuthorDto author) {

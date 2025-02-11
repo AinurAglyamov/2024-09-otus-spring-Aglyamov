@@ -13,13 +13,13 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
 
     private final AclService aclService;
 
+    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
+    @Autowired
+    private MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler;
+
     public AclMethodSecurityConfiguration(AclService aclService) {
         this.aclService = aclService;
     }
-
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired
-    MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler;
 
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {

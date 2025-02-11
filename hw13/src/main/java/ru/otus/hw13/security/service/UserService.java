@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import ru.otus.hw13.models.User;
 import ru.otus.hw13.repositories.UserRepository;
 
-import java.util.ArrayList;
-
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
