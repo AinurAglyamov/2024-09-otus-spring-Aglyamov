@@ -1,0 +1,36 @@
+spring:
+  data:
+    mongodb:
+      port: 0 # when flapdoodle using
+      database: library
+  shell:
+    command:
+      version:
+        enabled: false
+  datasource:
+    url: jdbc:h2:mem:maindb
+  sql:
+    init:
+      mode: always
+      schema-locations: schema.sql
+  h2:
+    console:
+      enabled: true
+      settings.web-allow-others: false
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
+
+mongock:
+  #runner-type: "ApplicationRunner" # default
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.hw14.mongock.changelog
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
+
