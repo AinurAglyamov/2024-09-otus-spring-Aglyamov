@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <style type="text/css">
+        body {
+            padding: 150px;
+        }
+
+        .books {
+            border: 1px solid steelblue;
+            width: 500px;
+            border-collapse: collapse;
+        }
+
+        .books tr td, th {
+            padding: 5px;
+            border: 1px solid steelblue;
+        }
+
+        .books td:last-child, td:first-child {
+            width: 50px;
+        }
+    </style>
+</head>
+<body>
+<h3>Книги:</h3>
+<table class="books">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Автор</th>
+        <th>Жанр</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody id="books tbody">
+    </tbody>
+</table>
+
+<script>
+    (function() {
+        getBooks();
+    })()
+
+    function getBooks() {
+        fetch('api/books')
+            .then(response => response.json())
+            .then(books => {
+                let booksTable = document.getElementById('books tbody');
+                booksTable.innerHTML = ''
+                books.forEach(book => {
+                    booksTable.insertAdjacentHTML('beforeend',`
+                    <tr>
+                        <td>${book.id}</td>
+                        <td>${book.title}</td>
+                        <td>${book.author.fullName}</td>
+                        <td>${book.genre.name}</td>
+                        <td>
+                            <a href="/edit?id=${book.id}">
+                                <button>Редактировать</button>
+                            </a>
+                            <button onclick="deleteBook(${book.id})">Удалить</button>
+                        </td>
+                    </tr>
+                    `)
+                })
+            })
+    }
+
+    function deleteBook(id) {
+        fetch("api/books?id="+id, {
+            method: 'DELETE',
+        })
+            .then(() => {
+                getBooks();
+            })
+    }
+</script>
+
+<br>
+<div>
+    <a href="/create">Добавить книгу</a>
+</div>
+
+</body>
+</html>
