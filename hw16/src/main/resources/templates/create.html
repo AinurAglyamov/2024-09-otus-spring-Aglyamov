@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 300px;
+        }
+
+        input {
+            width: 200px;
+        }
+
+        input:read-only {
+            background: lightblue;
+        }
+
+        .row {
+            margin-top: 10px;
+            width: 600px;
+        }
+
+        .create-result-block{
+            margin-top: 20px;
+        }
+    </style>
+
+
+</head>
+<body>
+
+<!-- book creation -->
+<div id="create-form">
+    <h3>Создание книги:</h3>
+
+    <div class="row">
+        <label for="title-input">Наименование:</label>
+        <input id="title-input" name="title" type="text"/>
+    </div>
+
+    <div class="row">
+        <label for="author-select">Автор:</label>
+        <select class="form-control" id="author-select">
+        </select>
+    </div>
+
+    <div class="row">
+        <label for="genre-select">Жанр:</label>
+        <select class="form-control" id="genre-select">
+        </select>
+    </div>
+
+    <div class="row">
+        <button onclick="createBook()">Сохранить</button>
+        <a th:href="@{/}"><button type="button">К списку книг</button></a>
+    </div>
+</div>
+
+<div id="create-result" class="create-result-block">
+</div>
+
+<script>
+    (function() {
+        let authorSelect = document.getElementById("author-select");
+        let genreSelect = document.getElementById("genre-select");
+
+        fetch('api/authors')
+            .then(response => response.json())
+            .then(authors => {
+                authors.forEach(author => {
+                    authorSelect.insertAdjacentHTML('beforeend',`
+                                    <option value="${author.id}">${author.fullName}</option>
+                                `)
+                })
+            })
+
+        fetch('api/genres')
+            .then(response => response.json())
+            .then(genres => {
+                genres.forEach(genre => {
+                    genreSelect.insertAdjacentHTML('beforeend', `
+                                    <option value="${genre.id}">${genre.name}</option>
+                                `)
+                })
+            })
+    })()
+
+    function createBook() {
+        const titleInput = document.getElementById("title-input")
+        const authorSelect = document.getElementById("author-select")
+        const genreSelect = document.getElementById("genre-select")
+        const successMessage = "Книга создана"
+        const errorMessage = "Ошибка создания книги"
+        const book = {
+            title: titleInput.value,
+            author: {
+                id: authorSelect.value
+            },
+            genre: {
+                id: genreSelect.value
+            }
+        }
+        fetch("api/books", {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(book)}
+        )
+            .then(response => {
+                let editResultContainer = document.getElementById("create-result");
+
+                if (response.ok) {
+                    editResultContainer.innerHTML = successMessage
+                    editResultContainer.style.color = 'green'
+                    return;
+                }
+
+                editResultContainer.innerHTML = errorMessage
+                editResultContainer.style.color = 'red'
+            })
+
+    }
+</script>
+</body>
+</html>
