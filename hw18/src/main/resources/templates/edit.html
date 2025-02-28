@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 300px;
+        }
+
+        input {
+            width: 200px;
+        }
+
+        input:read-only {
+            background: lightblue;
+        }
+
+        .row {
+            margin-top: 10px;
+            width: 600px;
+        }
+
+        .edit-result-block{
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        (function() {
+            findBookById();
+        })()
+
+        function findBookById() {
+            const bookId = new URLSearchParams(window.location.search).get('id');
+            fetch("api/books/"+bookId)
+                .then(response => response.json())
+                .then(book => {
+                    let idInput = document.getElementById("id-input");
+                    let titleInput = document.getElementById("title-input");
+                    let authorSelect = document.getElementById("author-select");
+                    let genreSelect = document.getElementById("genre-select");
+
+                    idInput.value = book.id
+                    titleInput.value = book.title
+
+                    fetch('api/genres')
+                        .then(response => response.json())
+                        .then(genres => {
+                            genres.forEach(genre => {
+                                let selected = genre.id === book.genre.id;
+                                let optionId = 'genre' + genre.id;
+                                genreSelect.insertAdjacentHTML('beforeend', `
+                                    <option id="${optionId}" value="${genre.id}">${genre.name}</option>
+                                `)
+                                if (selected) {
+                                    document.getElementById(optionId).setAttribute('selected','')
+                                }
+                            })
+                    })
+
+                    fetch('api/authors')
+                        .then(response => response.json())
+                        .then(authors => {
+                            authors.forEach(author => {
+                                let selected = author.id === book.author.id;
+                                let optionId = 'author' + author.id;
+                                authorSelect.insertAdjacentHTML('beforeend',`
+                                    <option id="${optionId}" value="${author.id}">${author.fullName}</option>
+                                `)
+                                if (selected) {
+                                    document.getElementById(optionId).setAttribute('selected','')
+                                }
+                            })
+                        })
+                })
+        }
+
+        function editBook() {
+            const idInput = document.getElementById("id-input")
+            const titleInput = document.getElementById("title-input")
+            const authorSelect = document.getElementById("author-select")
+            const genreSelect = document.getElementById("genre-select")
+            const successMessage = "Книга отредактирована"
+            const errorMessage = "Ошибка редактирования книги"
+            const book = {
+                id: idInput.value,
+                title: titleInput.value,
+                author: {
+                    id: authorSelect.value
+                },
+                genre: {
+                    id: genreSelect.value
+                }
+            }
+            fetch("api/books", {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(book)}
+            )
+                .then(response => {
+                    let editResultContainer = document.getElementById("edit-result");
+
+                    if (response.ok) {
+                        editResultContainer.innerHTML = successMessage
+                        editResultContainer.style.color = 'green'
+                        return;
+                    }
+
+                    editResultContainer.innerHTML = errorMessage
+                    editResultContainer.style.color = 'red'
+                })
+        }
+    </script>
+</head>
+<body>
+
+<!-- book edition -->
+<div id="edit-book-form" th:object="${book}">
+    <h3>Информация о книге:</h3>
+
+    <div class="row">
+        <label for="id-input">ID:</label>
+        <input id="id-input" type="text" readonly="readonly"/>
+    </div>
+
+    <div class="row">
+        <label for="title-input">Наименование:</label>
+        <input id="title-input" name="title" type="text"/>
+    </div>
+
+    <div class="row">
+        <label for="author-select">Автор:</label>
+        <select class="form-control" id="author-select">
+        </select>
+    </div>
+
+    <div class="row">
+        <label for="genre-select">Жанр:</label>
+        <select class="form-control" id="genre-select">
+        </select>
+    </div>
+
+    <div class="row">
+        <button onclick="editBook()">Сохранить</button>
+        <a th:href="@{/}"><button type="button">К списку книг</button></a>
+    </div>
+</div>
+
+<div id="edit-result" class="edit-result-block">
+</div>
+
+</body>
+</html>
