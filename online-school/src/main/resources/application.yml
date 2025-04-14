@@ -1,0 +1,52 @@
+server:
+  port: 8080
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5444/online_school_db
+    username: local
+    password: local
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/online-school
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8180/realms/online-school
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: online-school
+            client-secret: ngiJo0BsZSap1BHKtbzQ4Z6ADvpEvzxx
+            scope: openid
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: false
+
+  data:
+    rest:
+      base-path: /datarest
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    defaults:
+      enabled: true
+logging:
+  level:
+    org.springframework.security: trace

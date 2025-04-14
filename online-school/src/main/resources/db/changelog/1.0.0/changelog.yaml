@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-00.courses.create
+      author: aynur.aglyamov
+      changes:
+        - sqlFile:
+            path: classpath:db/changelog/1.0.0/01-00.courses.create.sql
+  - changeSet:
+      id: 02-00.groups.create
+      author: aynur.aglyamov
+      changes:
+        - sqlFile:
+            path: classpath:db/changelog/1.0.0/02-00.groups.create.sql
+  - changeSet:
+      id: 03-00.groups.create
+      author: aynur.aglyamov
+      changes:
+        - sqlFile:
+            path: classpath:db/changelog/1.0.0/03-00.students.create.sql
+  - changeSet:
+      id: 04-00.teachers.create
+      author: aynur.aglyamov
+      changes:
+        - sqlFile:
+            path: classpath:db/changelog/1.0.0/04-00.teachers.create.sql
+  - changeSet:
+      id: 05-00.homeworks_info.create
+      author: aynur.aglyamov
+      changes:
+        - sqlFile:
+            path: classpath:db/changelog/1.0.0/05-00.homeworks_info.create.sql
+  - changeSet:
+      id: 05-01.homeworks.create
+      author: aynur.aglyamov
+      changes:
+        - sqlFile:
+            path: classpath:db/changelog/1.0.0/05-01.homeworks.create.sql
+  - changeSet:
+      id: 05-02.homeworks_chat.create
+      author: aynur.aglyamov
+      changes:
+        - sqlFile:
+            path: classpath:db/changelog/1.0.0/05-02.homeworks_chat.create.sql
+  - changeSet:
+      id: 06-00.courses_teachers.create
+      author: aynur.aglyamov
+      changes:
+        - sqlFile:
+            path: classpath:db/changelog/1.0.0/06-00.courses_teachers.create.sql
+  - changeSet:
+      id: 07-00.courses_teachers.create
+      author: aynur.aglyamov
+      changes:
+        - sqlFile:
+            path: classpath:db/changelog/1.0.0/07-00.students_groups.create.sql
+  - changeSet:
+      id: 08-00.init.data
+      author: aynur.aglyamov
+      changes:
+        - sqlFile:
+            path: classpath:db/changelog/1.0.0/08-00.init.data.sql
